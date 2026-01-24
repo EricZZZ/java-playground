@@ -1,3 +1,4 @@
+package com.ericzzz.datastructure;
 
 // 栈
 // push() 入栈
