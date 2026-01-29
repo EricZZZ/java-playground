@@ -1,13 +1,16 @@
+import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 public class StreamTest {
 
     public static void main(String[] args) {
+
         List<Dish> menu = Arrays.asList(
                 new Dish("pork", 800, false, Dish.Type.MEAT),
                 new Dish("beef", 700, false, Dish.Type.MEAT),
@@ -26,6 +29,15 @@ public class StreamTest {
                 .limit(3)
                 .collect(toList());
         System.out.println(threeHighCaloricDishNames);
+
+        // 计算菜单中所有菜肴的总卡路里
+        int totalCalories = menu.stream().map(Dish::getCalories).reduce(Integer::sum).get();
+        System.out.println("StreamTest.main() totalCalories = " + totalCalories);
+        totalCalories = menu.stream().mapToInt(Dish::getCalories).sum();
+        System.out.println("StreamTest.main() totalCalories = " + totalCalories);
+
+        Map<Dish.Type, List<Dish>> dishesByType = menu.stream().collect(groupingBy(Dish::getType));
+        System.out.println("StreamTest.main() dishesByType = " + dishesByType);
 
         List<Integer> list = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9);
         int max = list.stream().reduce(0, Integer::max);
