@@ -1,8 +1,17 @@
+package com.ericzzz.j8;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinTask;
 import java.util.function.Function;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 public class ParallelStreamsTest {
+
+    private static long forkJoinSum(long n) {
+        long[] numbers = LongStream.rangeClosed(1, n).toArray();
+        ForkJoinTask<Long> task = new ForkJoinSumCalculator(numbers);
+        return new ForkJoinPool().invoke(task);
+    }
 
     public static long sequentialSum(long n) {
         return Stream.iterate(1L, i -> i + 1).limit(n).reduce(0L, Long::sum);
@@ -40,6 +49,7 @@ public class ParallelStreamsTest {
                 "Iterative sum done in:" + measureSumPerf(ParallelStreamsTest::iterativeSum, 10_000_000) + " msecs");
         System.out.println(
                 "Parallel sum done in:" + measureSumPerf(ParallelStreamsTest::parallelSum, 10_000_000) + " msecs");
-
+        System.out.println(
+                "Fork/Join sum done in:" + measureSumPerf(ParallelStreamsTest::forkJoinSum, 10_000_000) + " msecs");
     }
 }

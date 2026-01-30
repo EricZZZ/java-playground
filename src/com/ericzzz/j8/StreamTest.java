@@ -1,3 +1,4 @@
+package com.ericzzz.j8;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
