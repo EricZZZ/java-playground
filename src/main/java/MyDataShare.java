@@ -9,9 +9,8 @@ public class MyDataShare {
             new Thread(dec).start();
         }
     }
-}
 
-class MyData {
+    static class MyData {
     // 将数据抽象成 MyData 类，并将数据的操作（add、dec 方法）作为类的方法
     private int j = 0;
 
@@ -31,7 +30,7 @@ class MyData {
 
 }
 
-class AddRunnable implements Runnable {
+    static class AddRunnable implements Runnable {
     MyData data;
 
     // 线程使用该类的对象并调用类的方法对数据进行操作
@@ -46,16 +45,16 @@ class AddRunnable implements Runnable {
 
 }
 
-class DecRunnable implements Runnable {
-    MyData data;
+    static class DecRunnable implements Runnable {
+        MyData data;
 
-    public DecRunnable(MyData data) {
-        this.data = data;
+        public DecRunnable(MyData data) {
+            this.data = data;
+        }
+
+        @Override
+        public void run() {
+            data.dec();
+        }
     }
-
-    @Override
-    public void run() {
-        data.dec();
-    }
-
 }

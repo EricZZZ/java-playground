@@ -24,6 +24,8 @@ lib/
 Thumbs.db
 
 # Build tools
+target/
+.mvn/
 mvnw
 mvnw.cmd
 pom.xml.versionsBackup
