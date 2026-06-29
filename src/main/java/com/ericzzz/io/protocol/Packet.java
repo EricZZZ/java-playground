@@ -1,4 +1,4 @@
-package com.ericzzz.io.protocol.command;
+package com.ericzzz.io.protocol;
 
 import com.alibaba.fastjson.annotation.JSONField;
 

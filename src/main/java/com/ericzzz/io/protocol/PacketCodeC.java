@@ -1,8 +1,11 @@
-package com.ericzzz.io.protocol.command;
+package com.ericzzz.io.protocol;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import com.ericzzz.io.protocol.command.Command;
+import com.ericzzz.io.protocol.request.LoginRequestPacket;
+import com.ericzzz.io.protocol.response.LoginResponsePacket;
 import com.ericzzz.io.serialize.Serializer;
 import com.ericzzz.io.serialize.impl.JSONSerializer;
 
@@ -11,21 +14,28 @@ import io.netty.buffer.ByteBufAllocator;
 
 public class PacketCodeC {
     private static final int MAGIC_NUMBER = 0x12345678;
-    private static final Map<Byte,Class<? extends Packet>> packetTypeMap;
-    private static final Map<Byte,Serializer> serializerMap;
+    private static final Map<Byte, Class<? extends Packet>> packetTypeMap;
+    private static final Map<Byte, Serializer> serializerMap;
+
+    // 单例模式
+    public static final PacketCodeC INSTANCE = new PacketCodeC();
+
+    private PacketCodeC() {
+    }
 
     static {
         packetTypeMap = new HashMap<>();
         packetTypeMap.put(Command.LOGIN_REQUEST, LoginRequestPacket.class);
+        packetTypeMap.put(Command.LOGIN_RESPONSE, LoginResponsePacket.class);
 
         serializerMap = new HashMap<>();
         Serializer serializer = new JSONSerializer();
         serializerMap.put(serializer.getSerializerAlgorithm(), serializer);
     }
 
-    public ByteBuf encode(Packet packet) {
+    public ByteBuf encode(ByteBufAllocator byteBufAllocator, Packet packet) {
         // 1. 创建 ByteBuf 对象
-        ByteBuf byteBuf = ByteBufAllocator.DEFAULT.ioBuffer();
+        ByteBuf byteBuf = byteBufAllocator.ioBuffer();
 
         // 2. 序列化 Java 对象
         byte[] bytes = Serializer.DEFAULT.serialize(packet);
@@ -69,16 +79,4 @@ public class PacketCodeC {
         return packetTypeMap.get(command);
     }
 
-    public static void main(String[] args) {
-        // 测试编码
-        LoginRequestPacket loginRequestPacket = new LoginRequestPacket();
-        loginRequestPacket.setUserId(1001);
-        loginRequestPacket.setUserName("ericzzz");
-        loginRequestPacket.setPassword("123456");
-        ByteBuf byteBuf = new PacketCodeC().encode(loginRequestPacket);
-        System.out.println(byteBuf.toString());
-        // 测试解码
-        LoginRequestPacket loginRequestPacket1 = (LoginRequestPacket) new PacketCodeC().decode(byteBuf);
-        System.out.println(loginRequestPacket1.toString());
-    }
 }
