@@ -1,4 +1,4 @@
-package com.ericzzz.io;
+package com.ericzzz.io.client;
 
 import java.nio.charset.Charset;
 import java.util.Date;

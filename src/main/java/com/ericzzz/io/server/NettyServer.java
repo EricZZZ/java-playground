@@ -1,4 +1,4 @@
-package com.ericzzz.io;
+package com.ericzzz.io.server;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
@@ -10,9 +10,12 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 
 public class NettyServer {
+
+    private static final int PORT = 8000;
+
     public static void main(String[] args) {
-        int port = 8000;
-        ServerBootstrap serverBootstrap = new ServerBootstrap();
+        
+        final ServerBootstrap serverBootstrap = new ServerBootstrap();
         
         NioEventLoopGroup boss = new NioEventLoopGroup();
         NioEventLoopGroup worker = new NioEventLoopGroup();
@@ -20,6 +23,9 @@ public class NettyServer {
         // 1. 必须先对 ServerBootstrap 进行完整配置
         serverBootstrap.group(boss, worker)
                 .channel(NioServerSocketChannel.class)
+                .option(ChannelOption.SO_BACKLOG, 1024)
+                .childOption(ChannelOption.SO_KEEPALIVE, true)
+                .childOption(ChannelOption.TCP_NODELAY, true)
                 .childHandler(new ChannelInitializer<NioSocketChannel>() {
                     @Override
                     protected void initChannel(NioSocketChannel ch) {
@@ -27,12 +33,10 @@ public class NettyServer {
                     }
                 });
         
-                //  2. 设置TCP参数
-                serverBootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
-                serverBootstrap.childOption(ChannelOption.TCP_NODELAY, true);
+                
 
         // 3. 配置完成后，再调用绑定方法
-        bind(serverBootstrap, port);
+        bind(serverBootstrap, PORT);
     }
 
     /**
@@ -46,8 +50,6 @@ public class NettyServer {
                     System.out.println("端口[" + port + "]绑定成功");
                 } else {
                     System.err.println("端口[" + port + "]绑定失败");
-                    // 递归尝试下一个端口
-                    bind(serverBootstrap, port + 1);
                 }
             }
         });

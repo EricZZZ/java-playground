@@ -1,4 +1,4 @@
-package com.ericzzz.io;
+package com.ericzzz.io.server;
 
 import java.nio.charset.Charset;
 import java.util.Date;
@@ -13,6 +13,8 @@ public class FirstServerHandler extends ChannelInboundHandlerAdapter {
         ByteBuf byteBuf = (ByteBuf) msg;
         System.out.println(new Date() + ": 服务端读到数据-> " + byteBuf.toString(Charset.forName("utf-8")));
 
+        // 回复数据到客户端
+        System.out.println(new Date() + ": 服务端写出数据");
         ByteBuf out = getByteBuf(ctx);
         ctx.channel().writeAndFlush(out);
     }
