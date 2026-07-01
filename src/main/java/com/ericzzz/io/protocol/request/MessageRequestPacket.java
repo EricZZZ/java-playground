@@ -3,13 +3,17 @@ package com.ericzzz.io.protocol.request;
 import com.ericzzz.io.protocol.Packet;
 import com.ericzzz.io.protocol.command.Command;
 
-public class MessageRequestPacket extends Packet{
-    
+public class MessageRequestPacket extends Packet {
+
     private String message;
+
+    public MessageRequestPacket(String message) {
+        this.message = message;
+    }
 
     @Override
     public Byte getCommand() {
-        
+
         return Command.MESSAGE_REQUEST;
     }
 
@@ -21,7 +25,4 @@ public class MessageRequestPacket extends Packet{
         this.message = message;
     }
 
-    
-
-    
 }
