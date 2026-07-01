@@ -7,6 +7,8 @@ import com.ericzzz.io.protocol.Packet;
 import com.ericzzz.io.protocol.PacketCodeC;
 import com.ericzzz.io.protocol.request.LoginRequestPacket;
 import com.ericzzz.io.protocol.response.LoginResponsePacket;
+import com.ericzzz.io.protocol.response.MessageResponsePacket;
+import com.ericzzz.io.util.LoginUtil;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -41,10 +43,14 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
             LoginResponsePacket loginResponsePacket = (LoginResponsePacket) packet;
             if (loginResponsePacket.isSuccess()) {
                 System.out.println(new Date() + ": 客户端登录成功");
+                LoginUtil.markAsLogin(ctx.channel());
             }
             else {
                 System.out.println(new Date() + ": 客户端登录失败，原因：" + loginResponsePacket.getReason());
             }
+        }else if(packet instanceof MessageResponsePacket){
+            MessageResponsePacket messageResponsePacket = (MessageResponsePacket) packet;
+            System.out.println(new Date() + ": 收到服务端消息：" + messageResponsePacket.getMessage());
         }
     }
     
