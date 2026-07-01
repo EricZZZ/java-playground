@@ -8,6 +8,7 @@ import com.ericzzz.io.client.handler.LoginResponseHandler;
 import com.ericzzz.io.client.handler.MessageResponseHandler;
 import com.ericzzz.io.codec.PacketDecoder;
 import com.ericzzz.io.codec.PacketEncoder;
+import com.ericzzz.io.codec.Spliter;
 import com.ericzzz.io.protocol.request.MessageRequestPacket;
 import com.ericzzz.io.util.LoginUtil;
 
@@ -41,6 +42,7 @@ public class NettyClient {
                 .handler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     protected void initChannel(SocketChannel ch) {
+                        ch.pipeline().addLast(new Spliter());
                         ch.pipeline().addLast(new PacketDecoder());
                         ch.pipeline().addLast(new LoginResponseHandler());
                         ch.pipeline().addLast(new MessageResponseHandler());
