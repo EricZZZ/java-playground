@@ -3,6 +3,7 @@ package com.ericzzz.io.server;
 import com.ericzzz.io.codec.PacketDecoder;
 import com.ericzzz.io.codec.PacketEncoder;
 import com.ericzzz.io.codec.Spliter;
+import com.ericzzz.io.server.handler.AuthHandler;
 import com.ericzzz.io.server.handler.LifeCyCleTestHandler;
 import com.ericzzz.io.server.handler.LoginRequestHandler;
 import com.ericzzz.io.server.handler.MessageRequestHandler;
@@ -51,6 +52,7 @@ public class NettyServer {
                         ch.pipeline().addLast(new Spliter());
                         ch.pipeline().addLast(new PacketDecoder());
                         ch.pipeline().addLast(new LoginRequestHandler());
+                        ch.pipeline().addLast(new AuthHandler());
                         ch.pipeline().addLast(new MessageRequestHandler());
                         ch.pipeline().addLast(new PacketEncoder());
                     }

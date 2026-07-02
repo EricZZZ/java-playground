@@ -14,13 +14,13 @@ public class LoginResponseHandler extends SimpleChannelInboundHandler<LoginRespo
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, LoginResponsePacket loginResponsePacket) throws Exception {
-        if (loginResponsePacket.isSuccess()){
+        if (loginResponsePacket.isSuccess()) {
             System.out.println(new Date() + ": 客户端登录成功");
             LoginUtil.markAsLogin(ctx.channel());
-        }else{
+        } else {
             System.out.println(new Date() + ": 客户端登录失败，原因：" + loginResponsePacket.getReason());
         }
-        
+
     }
 
     @Override
@@ -31,9 +31,13 @@ public class LoginResponseHandler extends SimpleChannelInboundHandler<LoginRespo
         loginRequestPacket.setUserName("ericzzz");
         loginRequestPacket.setPassword("123456");
 
-        // 写数据
+        // 这里不往服务端写数据，就是无身份认证
         ctx.channel().writeAndFlush(loginRequestPacket);
     }
- 
-    
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        System.out.println("客户端连接被关闭!");
+    }
+
 }

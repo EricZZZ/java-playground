@@ -10,7 +10,6 @@ import com.ericzzz.io.codec.PacketDecoder;
 import com.ericzzz.io.codec.PacketEncoder;
 import com.ericzzz.io.codec.Spliter;
 import com.ericzzz.io.protocol.request.MessageRequestPacket;
-import com.ericzzz.io.util.LoginUtil;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -77,15 +76,15 @@ public class NettyClient {
     }
 
     private static void stratConsoleThread(Channel channel) {
-        new Thread(()->{
-            while(!Thread.interrupted()){
-                if (LoginUtil.hasLogin(channel)){
-                    System.out.println("输入消息发送至服务端： ");
-                    Scanner sc = new Scanner(System.in);
-                    String line = sc.nextLine();
-                    
-                    channel.writeAndFlush(new MessageRequestPacket(line));
-                }
+        new Thread(() -> {
+            while (!Thread.interrupted()) {
+                // if (LoginUtil.hasLogin(channel)){
+                System.out.println("输入消息发送至服务端： ");
+                Scanner sc = new Scanner(System.in);
+                String line = sc.nextLine();
+
+                channel.writeAndFlush(new MessageRequestPacket(line));
+                // }
             }
         }).start();
     }

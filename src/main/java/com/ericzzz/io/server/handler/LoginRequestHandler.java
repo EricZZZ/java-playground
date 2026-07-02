@@ -4,6 +4,7 @@ import java.util.Date;
 
 import com.ericzzz.io.protocol.request.LoginRequestPacket;
 import com.ericzzz.io.protocol.response.LoginResponsePacket;
+import com.ericzzz.io.util.LoginUtil;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -19,6 +20,7 @@ public class LoginRequestHandler extends SimpleChannelInboundHandler<LoginReques
         if (valid(loginRequestPacket)) {
             loginResponsePacket.setSuccess(true);
             System.out.println(new Date() + ": 登录成功!");
+            LoginUtil.markAsLogin(ctx.channel());
 
         } else {
             loginResponsePacket.setSuccess(false);
