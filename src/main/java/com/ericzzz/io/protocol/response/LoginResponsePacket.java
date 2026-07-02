@@ -3,12 +3,12 @@ package com.ericzzz.io.protocol.response;
 import com.ericzzz.io.protocol.Packet;
 import com.ericzzz.io.protocol.command.Command;
 
-public class LoginResponsePacket extends Packet{
+public class LoginResponsePacket extends Packet {
+
+    private String userId;
+    private String userName;
     private boolean success;
-
     private String reason;
-
-    
 
     @Override
     public Byte getCommand() {
@@ -31,5 +31,22 @@ public class LoginResponsePacket extends Packet{
         this.reason = reason;
     }
 
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
     
+
 }

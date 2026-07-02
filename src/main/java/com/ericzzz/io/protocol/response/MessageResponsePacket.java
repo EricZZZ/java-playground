@@ -3,7 +3,9 @@ package com.ericzzz.io.protocol.response;
 import com.ericzzz.io.protocol.Packet;
 import com.ericzzz.io.protocol.command.Command;
 
-public class MessageResponsePacket extends Packet{
+public class MessageResponsePacket extends Packet {
+    private String fromUserId;
+    private String fromUserName;
     private String message;
 
     public String getMessage() {
@@ -19,5 +21,20 @@ public class MessageResponsePacket extends Packet{
         return Command.MESSAGE_RESPONSE;
     }
 
-    
+    public String getFromUserId() {
+        return fromUserId;
+    }
+
+    public void setFromUserId(String fromUserId) {
+        this.fromUserId = fromUserId;
+    }
+
+    public String getFromUserName() {
+        return fromUserName;
+    }
+
+    public void setFromUserName(String fromUserName) {
+        this.fromUserName = fromUserName;
+    }
+
 }

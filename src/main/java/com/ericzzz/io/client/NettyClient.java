@@ -9,7 +9,9 @@ import com.ericzzz.io.client.handler.MessageResponseHandler;
 import com.ericzzz.io.codec.PacketDecoder;
 import com.ericzzz.io.codec.PacketEncoder;
 import com.ericzzz.io.codec.Spliter;
+import com.ericzzz.io.protocol.request.LoginRequestPacket;
 import com.ericzzz.io.protocol.request.MessageRequestPacket;
+import com.ericzzz.io.util.SessionUtil;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -76,16 +78,33 @@ public class NettyClient {
     }
 
     private static void stratConsoleThread(Channel channel) {
+        Scanner sc = new Scanner(System.in);
+        LoginRequestPacket loginRequestPacket = new LoginRequestPacket();
         new Thread(() -> {
             while (!Thread.interrupted()) {
-                // if (LoginUtil.hasLogin(channel)){
-                System.out.println("输入消息发送至服务端： ");
-                Scanner sc = new Scanner(System.in);
-                String line = sc.nextLine();
-
-                channel.writeAndFlush(new MessageRequestPacket(line));
-                // }
+                if (!SessionUtil.hasLogin(channel)) {
+                    System.out.println("输入用户名登录：");
+                    String username = sc.nextLine();
+                    loginRequestPacket.setUserName(username);
+                    // 使用默认密码
+                    loginRequestPacket.setPassword("pwd");
+                    // 发送登录数据包
+                    channel.writeAndFlush(loginRequestPacket);
+                    waitForLoginResponse();
+                } else {
+                    String toUserId = sc.next();
+                    String message = sc.next();
+                    channel.writeAndFlush(new MessageRequestPacket(toUserId, message));
+                }
             }
         }).start();
+    }
+
+    private static void waitForLoginResponse() {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
