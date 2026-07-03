@@ -7,9 +7,12 @@ import java.util.concurrent.TimeUnit;
 import com.ericzzz.io.client.console.ConsoleCommandManager;
 import com.ericzzz.io.client.console.LoginConsoleCommand;
 import com.ericzzz.io.client.handler.CreateGroupResponseHandler;
+import com.ericzzz.io.client.handler.JoinGroupResponseHandler;
+import com.ericzzz.io.client.handler.ListGroupMembersResponseHandler;
 import com.ericzzz.io.client.handler.LoginResponseHandler;
 import com.ericzzz.io.client.handler.LogoutResponseHandler;
 import com.ericzzz.io.client.handler.MessageResponseHandler;
+import com.ericzzz.io.client.handler.QuitGroupResponseHandler;
 import com.ericzzz.io.codec.PacketDecoder;
 import com.ericzzz.io.codec.PacketEncoder;
 import com.ericzzz.io.codec.Spliter;
@@ -47,10 +50,20 @@ public class NettyClient {
                     protected void initChannel(SocketChannel ch) {
                         ch.pipeline().addLast(new Spliter());
                         ch.pipeline().addLast(new PacketDecoder());
+                        // 登录响应处理器
                         ch.pipeline().addLast(new LoginResponseHandler());
-                        ch.pipeline().addLast(new LogoutResponseHandler());
+                        // 收消息处理器
                         ch.pipeline().addLast(new MessageResponseHandler());
+                        // 创建群响应处理器
                         ch.pipeline().addLast(new CreateGroupResponseHandler());
+                        // 加群响应处理器
+                        ch.pipeline().addLast(new JoinGroupResponseHandler());
+                        // 退群响应处理器
+                        ch.pipeline().addLast(new QuitGroupResponseHandler());
+                        // 获取群成员响应处理器
+                        ch.pipeline().addLast(new ListGroupMembersResponseHandler());
+                        // 登出响应处理器
+                        ch.pipeline().addLast(new LogoutResponseHandler());
                         ch.pipeline().addLast(new PacketEncoder());
                     }
                 });

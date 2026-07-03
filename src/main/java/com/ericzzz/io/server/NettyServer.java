@@ -5,9 +5,12 @@ import com.ericzzz.io.codec.PacketEncoder;
 import com.ericzzz.io.codec.Spliter;
 import com.ericzzz.io.server.handler.AuthHandler;
 import com.ericzzz.io.server.handler.CreateGroupRequestHandler;
+import com.ericzzz.io.server.handler.JoinGroupRequestHandler;
+import com.ericzzz.io.server.handler.ListGroupMembersRequestHandler;
 import com.ericzzz.io.server.handler.LoginRequestHandler;
 import com.ericzzz.io.server.handler.LogoutRequestHandler;
 import com.ericzzz.io.server.handler.MessageRequestHandler;
+import com.ericzzz.io.server.handler.QuitGroupRequestHandler;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
@@ -23,12 +26,12 @@ public class NettyServer {
     private static final int PORT = 8000;
 
     public static void main(String[] args) {
-        
+
         final ServerBootstrap serverBootstrap = new ServerBootstrap();
-        
+
         NioEventLoopGroup boss = new NioEventLoopGroup();
         NioEventLoopGroup worker = new NioEventLoopGroup();
-        
+
         // 1. 必须先对 ServerBootstrap 进行完整配置
         serverBootstrap.group(boss, worker)
                 .channel(NioServerSocketChannel.class)
@@ -51,16 +54,24 @@ public class NettyServer {
 
                         ch.pipeline().addLast(new Spliter());
                         ch.pipeline().addLast(new PacketDecoder());
+                        // 登录请求处理器
                         ch.pipeline().addLast(new LoginRequestHandler());
                         ch.pipeline().addLast(new AuthHandler());
+                        // 单聊消息请求处理器
                         ch.pipeline().addLast(new MessageRequestHandler());
+                        // 创建群请求处理器
                         ch.pipeline().addLast(new CreateGroupRequestHandler());
+                        // 加群请求处理器
+                        ch.pipeline().addLast(new JoinGroupRequestHandler());
+                        // 退群请求处理器
+                        ch.pipeline().addLast(new QuitGroupRequestHandler());
+                        // 获取群成员请求处理器
+                        ch.pipeline().addLast(new ListGroupMembersRequestHandler());
+                        // 登出请求处理器
                         ch.pipeline().addLast(new LogoutRequestHandler());
                         ch.pipeline().addLast(new PacketEncoder());
                     }
                 });
-        
-                
 
         // 3. 配置完成后，再调用绑定方法
         bind(serverBootstrap, PORT);
