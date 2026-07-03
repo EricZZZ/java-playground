@@ -4,13 +4,15 @@ import java.util.Date;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
+import com.ericzzz.io.client.console.ConsoleCommandManager;
+import com.ericzzz.io.client.console.LoginConsoleCommand;
+import com.ericzzz.io.client.handler.CreateGroupResponseHandler;
 import com.ericzzz.io.client.handler.LoginResponseHandler;
+import com.ericzzz.io.client.handler.LogoutResponseHandler;
 import com.ericzzz.io.client.handler.MessageResponseHandler;
 import com.ericzzz.io.codec.PacketDecoder;
 import com.ericzzz.io.codec.PacketEncoder;
 import com.ericzzz.io.codec.Spliter;
-import com.ericzzz.io.protocol.request.LoginRequestPacket;
-import com.ericzzz.io.protocol.request.MessageRequestPacket;
 import com.ericzzz.io.util.SessionUtil;
 
 import io.netty.bootstrap.Bootstrap;
@@ -46,9 +48,10 @@ public class NettyClient {
                         ch.pipeline().addLast(new Spliter());
                         ch.pipeline().addLast(new PacketDecoder());
                         ch.pipeline().addLast(new LoginResponseHandler());
+                        ch.pipeline().addLast(new LogoutResponseHandler());
                         ch.pipeline().addLast(new MessageResponseHandler());
+                        ch.pipeline().addLast(new CreateGroupResponseHandler());
                         ch.pipeline().addLast(new PacketEncoder());
-
                     }
                 });
 
@@ -78,33 +81,19 @@ public class NettyClient {
     }
 
     private static void stratConsoleThread(Channel channel) {
+        ConsoleCommandManager consoleCommandManager = new ConsoleCommandManager();
+        LoginConsoleCommand loginConsoleCommand = new LoginConsoleCommand();
         Scanner sc = new Scanner(System.in);
-        LoginRequestPacket loginRequestPacket = new LoginRequestPacket();
+
         new Thread(() -> {
             while (!Thread.interrupted()) {
                 if (!SessionUtil.hasLogin(channel)) {
-                    System.out.println("输入用户名登录：");
-                    String username = sc.nextLine();
-                    loginRequestPacket.setUserName(username);
-                    // 使用默认密码
-                    loginRequestPacket.setPassword("pwd");
-                    // 发送登录数据包
-                    channel.writeAndFlush(loginRequestPacket);
-                    waitForLoginResponse();
+                    loginConsoleCommand.exec(sc, channel);
                 } else {
-                    String toUserId = sc.next();
-                    String message = sc.next();
-                    channel.writeAndFlush(new MessageRequestPacket(toUserId, message));
+                    consoleCommandManager.exec(sc, channel);
                 }
             }
         }).start();
     }
 
-    private static void waitForLoginResponse() {
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
 }

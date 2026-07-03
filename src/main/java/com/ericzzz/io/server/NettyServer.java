@@ -4,8 +4,9 @@ import com.ericzzz.io.codec.PacketDecoder;
 import com.ericzzz.io.codec.PacketEncoder;
 import com.ericzzz.io.codec.Spliter;
 import com.ericzzz.io.server.handler.AuthHandler;
-import com.ericzzz.io.server.handler.LifeCyCleTestHandler;
+import com.ericzzz.io.server.handler.CreateGroupRequestHandler;
 import com.ericzzz.io.server.handler.LoginRequestHandler;
+import com.ericzzz.io.server.handler.LogoutRequestHandler;
 import com.ericzzz.io.server.handler.MessageRequestHandler;
 
 import io.netty.bootstrap.ServerBootstrap;
@@ -48,12 +49,13 @@ public class NettyServer {
                         // ch.pipeline().addLast(new OutBoundHandlerB());
                         // ch.pipeline().addLast(new OutBoundHandlerC());
 
-                        ch.pipeline().addLast(new LifeCyCleTestHandler());
                         ch.pipeline().addLast(new Spliter());
                         ch.pipeline().addLast(new PacketDecoder());
                         ch.pipeline().addLast(new LoginRequestHandler());
                         ch.pipeline().addLast(new AuthHandler());
                         ch.pipeline().addLast(new MessageRequestHandler());
+                        ch.pipeline().addLast(new CreateGroupRequestHandler());
+                        ch.pipeline().addLast(new LogoutRequestHandler());
                         ch.pipeline().addLast(new PacketEncoder());
                     }
                 });
