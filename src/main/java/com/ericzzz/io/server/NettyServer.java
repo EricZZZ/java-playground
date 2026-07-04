@@ -2,7 +2,9 @@ package com.ericzzz.io.server;
 
 import com.ericzzz.io.codec.PacketCodecHandler;
 import com.ericzzz.io.codec.Spliter;
+import com.ericzzz.io.handler.IMIdleStateHandler;
 import com.ericzzz.io.server.handler.AuthHandler;
+import com.ericzzz.io.server.handler.HeartBeatRequestHandler;
 import com.ericzzz.io.server.handler.IMHandler;
 import com.ericzzz.io.server.handler.LoginRequestHandler;
 
@@ -46,9 +48,12 @@ public class NettyServer {
                         // ch.pipeline().addLast(new OutBoundHandlerB());
                         // ch.pipeline().addLast(new OutBoundHandlerC());
 
+                        // 空闲检测
+                        ch.pipeline().addLast(new IMIdleStateHandler());
                         ch.pipeline().addLast(new Spliter());
                         ch.pipeline().addLast(PacketCodecHandler.INSTANCE);
                         ch.pipeline().addLast(LoginRequestHandler.INSTANCE);
+                        ch.pipeline().addLast(HeartBeatRequestHandler.INSTANCE);
                         ch.pipeline().addLast(AuthHandler.INSTANCE);
                         ch.pipeline().addLast(IMHandler.INSTANCE);
                     }

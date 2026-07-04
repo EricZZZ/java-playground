@@ -8,6 +8,7 @@ import com.ericzzz.io.client.console.ConsoleCommandManager;
 import com.ericzzz.io.client.console.LoginConsoleCommand;
 import com.ericzzz.io.client.handler.CreateGroupResponseHandler;
 import com.ericzzz.io.client.handler.GroupMessageResponseHandler;
+import com.ericzzz.io.client.handler.HeartBeatTimerHandler;
 import com.ericzzz.io.client.handler.JoinGroupResponseHandler;
 import com.ericzzz.io.client.handler.ListGroupMembersResponseHandler;
 import com.ericzzz.io.client.handler.LoginResponseHandler;
@@ -17,6 +18,7 @@ import com.ericzzz.io.client.handler.QuitGroupResponseHandler;
 import com.ericzzz.io.codec.PacketDecoder;
 import com.ericzzz.io.codec.PacketEncoder;
 import com.ericzzz.io.codec.Spliter;
+import com.ericzzz.io.handler.IMIdleStateHandler;
 import com.ericzzz.io.util.SessionUtil;
 
 import io.netty.bootstrap.Bootstrap;
@@ -49,6 +51,9 @@ public class NettyClient {
                 .handler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     protected void initChannel(SocketChannel ch) {
+                        // 空闲检测
+                        ch.pipeline().addLast(new IMIdleStateHandler());
+
                         ch.pipeline().addLast(new Spliter());
                         ch.pipeline().addLast(new PacketDecoder());
                         // 登录响应处理器
@@ -68,6 +73,9 @@ public class NettyClient {
                         // 登出响应处理器
                         ch.pipeline().addLast(new LogoutResponseHandler());
                         ch.pipeline().addLast(new PacketEncoder());
+
+                        // 心跳定时器
+                        ch.pipeline().addLast(new HeartBeatTimerHandler());
                     }
                 });
 
