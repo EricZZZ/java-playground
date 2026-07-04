@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.ericzzz.io.protocol.command.Command;
 import com.ericzzz.io.protocol.request.CreateGroupRequestPacket;
+import com.ericzzz.io.protocol.request.GroupMessageRequestPacket;
 import com.ericzzz.io.protocol.request.JoinGroupRequestPacket;
 import com.ericzzz.io.protocol.request.ListGroupMembersRequestPacket;
 import com.ericzzz.io.protocol.request.LoginRequestPacket;
@@ -12,6 +13,7 @@ import com.ericzzz.io.protocol.request.LogoutRequestPacket;
 import com.ericzzz.io.protocol.request.MessageRequestPacket;
 import com.ericzzz.io.protocol.request.QuitGroupRequestPacket;
 import com.ericzzz.io.protocol.response.CreateGroupResponsePacket;
+import com.ericzzz.io.protocol.response.GroupMessageResponsePacket;
 import com.ericzzz.io.protocol.response.JoinGroupResponsePacket;
 import com.ericzzz.io.protocol.response.ListGroupMembersResponsePacket;
 import com.ericzzz.io.protocol.response.LoginResponsePacket;
@@ -50,6 +52,8 @@ public class PacketCodeC {
         packetTypeMap.put(Command.LIST_GROUP_MEMBERS_RESPONSE, ListGroupMembersResponsePacket.class);
         packetTypeMap.put(Command.QUIT_GROUP_REQUEST, QuitGroupRequestPacket.class);
         packetTypeMap.put(Command.QUIT_GROUP_RESPONSE, QuitGroupResponsePacket.class);
+        packetTypeMap.put(Command.GROUP_MESSAGE_REQUEST, GroupMessageRequestPacket.class);
+        packetTypeMap.put(Command.GROUP_MESSAGE_RESPONSE, GroupMessageResponsePacket.class);
 
         serializerMap = new HashMap<>();
         Serializer serializer = new JSONSerializer();

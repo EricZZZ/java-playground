@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 import com.ericzzz.io.client.console.ConsoleCommandManager;
 import com.ericzzz.io.client.console.LoginConsoleCommand;
 import com.ericzzz.io.client.handler.CreateGroupResponseHandler;
+import com.ericzzz.io.client.handler.GroupMessageResponseHandler;
 import com.ericzzz.io.client.handler.JoinGroupResponseHandler;
 import com.ericzzz.io.client.handler.ListGroupMembersResponseHandler;
 import com.ericzzz.io.client.handler.LoginResponseHandler;
@@ -62,6 +63,8 @@ public class NettyClient {
                         ch.pipeline().addLast(new QuitGroupResponseHandler());
                         // 获取群成员响应处理器
                         ch.pipeline().addLast(new ListGroupMembersResponseHandler());
+                        // 群消息响应
+                        ch.pipeline().addLast(new GroupMessageResponseHandler());
                         // 登出响应处理器
                         ch.pipeline().addLast(new LogoutResponseHandler());
                         ch.pipeline().addLast(new PacketEncoder());
